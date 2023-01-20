@@ -14,8 +14,9 @@ int main(int argc, char **argv) {
             write(1, buffer, bytes);
         }
     } else {
-        for (i = 0; i < argc; ++i) {
+        for (i = 0; i < argc - 1; ++i) {
             filedescriptor = open(argv[i + 1], O_RDWR);
+            printf("%d ", filedescriptor);
             while ((bytes = read(filedescriptor, buffer, 2048)) > 0) {
                 write(1, buffer, bytes);
             }
