@@ -10,22 +10,21 @@ int main(int argc, char **argv) {
     int i;
 
     if (argc <= 1) {
-        bytes = read(0, buffer, 2048);
-        write(1, buffer, bytes);
+        while((bytes = read(0, buffer, 2048)) != 0) {
+            write(1, buffer, bytes);
+        }
     } else {
         for (i = 0; i < argc; ++i) {
             filedescriptor = open(argv[i + 1], O_RDWR);
-            bytes = read(filedescriptor, buffer, 2048);
-            if (bytes <= 0) {
-                if (bytes == -1) {
-                    perror("open");
-                    exit(1);
-                }
-                break;
+            while ((bytes = read(filedescriptor, buffer, 2048)) > 0) {
+                write(1, buffer, bytes);
             }
-            write(1, buffer, bytes);
-	        close(filedescriptor);
+            if (bytes < 0) {
+                perror("read");
+                exit(1);
+            }
         }
+	    close(filedescriptor);
     }
     return 0;
 }
